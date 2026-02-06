@@ -20,10 +20,12 @@ function Layout({ children }) {
     if (isAdmin) {
         navLinks = [
             { path: '/admin', label: 'Dashboard' },
+            { path: '/admin/slots', label: 'Slots' },
             { path: '/queue', label: 'Queue' },
             { path: '/menu', label: 'Menu' },
             { path: '/forecast', label: 'Forecast' },
-            { path: '/analytics', label: 'Analytics' }
+            { path: '/analytics', label: 'Analytics' },
+            { path: '/admin/incentives', label: 'Incentives' }
         ];
     }
 
@@ -43,7 +45,9 @@ function Layout({ children }) {
             { path: '/dashboard', label: 'Dashboard' },
             { path: '/booking', label: 'Book Meal' },
             { path: '/queue', label: 'Queue Status' },
-            { path: '/menu', label: 'Menu' }
+            { path: '/menu', label: 'Menu' },
+            { path: '/incentives', label: 'Rewards' },
+            { path: '/addons', label: 'Free Add-ons' }
         ];
     }
 

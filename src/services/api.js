@@ -110,5 +110,36 @@ export const analyticsAPI = {
     getSummary: () => api.get('/analytics/summary')
 };
 
+// Incentives API
+export const incentivesAPI = {
+    // User endpoints
+    getMyPoints: () => api.get('/incentives/my-points'),
+    getHistory: () => api.get('/incentives/my-history'),
+    getStatus: () => api.get('/incentives/status'),
+
+    // Admin endpoints
+    getRules: () => api.get('/incentives/rules'),
+    createRule: (data) => api.post('/incentives/rules', data),
+    updateRule: (id, data) => api.put(`/incentives/rules/${id}`, data),
+    deleteRule: (id) => api.delete(`/incentives/rules/${id}`),
+    getAbuseReport: () => api.get('/incentives/abuse-report'),
+    applyToSlots: () => api.post('/incentives/apply-to-slots')
+};
+
+// Addons API
+export const addonsAPI = {
+    // User endpoints
+    getAll: () => api.get('/addons'),
+    redeem: (id) => api.post(`/addons/${id}/redeem`),
+    getMyRedemptions: () => api.get('/addons/my-redemptions'),
+
+    // Admin endpoints
+    create: (data) => api.post('/addons', data),
+    update: (id, data) => api.put(`/addons/${id}`, data),
+    delete: (id) => api.delete(`/addons/${id}`),
+    claim: (code) => api.post('/addons/claim', { code })
+};
+
 export default api;
+
 

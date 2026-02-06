@@ -63,10 +63,10 @@ function StaffDashboard() {
 
     const toggleAvailability = async (item) => {
         try {
-            await menuAPI.toggleAvailability(item._id, !item.available);
+            await menuAPI.toggleAvailability(item.id, !item.available);
             setMenuItems(prev =>
                 prev.map(i =>
-                    i._id === item._id ? { ...i, available: !i.available } : i
+                    i.id === item.id ? { ...i, available: !i.available } : i
                 )
             );
         } catch (error) {
@@ -123,7 +123,7 @@ function StaffDashboard() {
                         <button
                             className="btn btn-success"
                             onClick={() =>
-                                markServed(queueStatus.currentlyServing._id)
+                                markServed(queueStatus.currentlyServing.id)
                             }
                             disabled={processing}
                         >
@@ -133,8 +133,8 @@ function StaffDashboard() {
                 </div>
             </div>
 
-       
-         
+
+
 
             {/* QUEUE LIST (READ ONLY) */}
             <div className="card">
@@ -144,7 +144,7 @@ function StaffDashboard() {
 
                 <div className="queue-list">
                     {queueStatus?.waitingTokens?.map(token => (
-                        <div key={token._id} className="queue-item">
+                        <div key={token.id} className="queue-item">
                             <span className="queue-token">
                                 {token.tokenNumber}
                             </span>

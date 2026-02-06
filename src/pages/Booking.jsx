@@ -115,9 +115,18 @@ function Booking() {
                             <div
                                 key={slot._id}
                                 className={`queue-item ${selectedSlot?._id === slot._id ? 'current' : ''}`}
-                                style={{ cursor: 'pointer' }}
+                                style={{ cursor: 'pointer', position: 'relative' }}
                                 onClick={() => setSelectedSlot(slot)}
                             >
+                                {slot.hasIncentive && (
+                                    <span className="badge badge-info" style={{
+                                        position: 'absolute',
+                                        top: '-8px',
+                                        right: '-8px'
+                                    }}>
+                                        +{slot.incentivePoints} pts
+                                    </span>
+                                )}
                                 <div>
                                     <div className="font-bold" style={{ textTransform: 'capitalize' }}>
                                         {slot.mealType}

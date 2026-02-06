@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { bookingsAPI, queueAPI, forecastsAPI, slotsAPI } from '../services/api';
+import { bookingsAPI, queueAPI, forecastsAPI, slotsAPI, incentivesAPI } from '../services/api';
 
 function UserDashboard() {
     const { user } = useAuth();
@@ -9,6 +10,7 @@ function UserDashboard() {
     const [queueStatus, setQueueStatus] = useState(null);
     const [todaySlots, setTodaySlots] = useState([]);
     const [forecasts, setForecasts] = useState([]);
+    const [points, setPoints] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,12 +19,13 @@ function UserDashboard() {
 
     const loadUserData = async () => {
         try {
-            const [bookingsRes, tokenRes, queueRes, slotsRes, forecastRes] = await Promise.all([
+            const [bookingsRes, tokenRes, queueRes, slotsRes, forecastRes, pointsRes] = await Promise.all([
                 bookingsAPI.getAll(),
                 queueAPI.getMyToken(),
                 queueAPI.getStatus(),
                 slotsAPI.getToday(),
-                forecastsAPI.getToday()
+                forecastsAPI.getToday(),
+                incentivesAPI.getMyPoints()
             ]);
 
             setBookings(bookingsRes.data);
@@ -30,6 +33,7 @@ function UserDashboard() {
             setQueueStatus(queueRes.data);
             setTodaySlots(slotsRes.data);
             setForecasts(forecastRes.data);
+            setPoints(pointsRes.data?.totalPoints || 0);
         } catch (error) {
             console.error('Error loading user data:', error);
         } finally {
@@ -92,6 +96,14 @@ function UserDashboard() {
                     <div className="stat-card-value">{queueStatus?.waitingCount || 0}</div>
                     <div className="stat-card-subtext">People waiting</div>
                 </div>
+
+                <Link to="/incentives" style={{ textDecoration: 'none' }}>
+                    <div className="stat-card" style={{ cursor: 'pointer' }}>
+                        <div className="stat-card-label">My Points</div>
+                        <div className="stat-card-value primary">{points}</div>
+                        <div className="stat-card-subtext">View Rewards</div>
+                    </div>
+                </Link>
             </div>
 
             <div className="dashboard-grid-2">
@@ -199,8 +211,8 @@ function UserDashboard() {
                                     <td>{booking.menuItems?.length || 0} items</td>
                                     <td>
                                         <span className={`badge ${booking.status === 'served' ? 'badge-success' :
-                                                booking.status === 'cancelled' ? 'badge-error' :
-                                                    'badge-neutral'
+                                            booking.status === 'cancelled' ? 'badge-error' :
+                                                'badge-neutral'
                                             }`}>
                                             {booking.status}
                                         </span>

@@ -392,6 +392,34 @@ tr:hover td {
   cursor: pointer;
 }
 
+/* Checkbox styling */
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+}
+
+.form-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-500);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Inline checkbox for forms */
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-500);
+  cursor: pointer;
+  vertical-align: middle;
+  margin-right: var(--spacing-xs);
+}
+
 /* Login Page */
 .login-container {
   min-height: 100vh;
@@ -761,7 +789,7 @@ tr:hover td {
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-lg);
   border-top: 4px solid var(--primary-500);
-   max-height: 90vh;
+  max-height: 90vh;
   overflow-y: auto;
 }
 
@@ -798,6 +826,7 @@ tr:hover td {
   gap: var(--spacing-md);
   margin-top: var(--spacing-lg);
 }
+
 /* ===== MODAL FORM TUNING ===== */
 .modal .form-group {
   margin-bottom: 0.9rem;
@@ -1203,7 +1232,9 @@ tr:hover td {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Tab Content */
@@ -1212,7 +1243,13 @@ tr:hover td {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

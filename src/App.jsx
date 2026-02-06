@@ -11,6 +11,10 @@ import QueueStatus from './pages/QueueStatus';
 import Menu from './pages/Menu';
 import Analytics from './pages/Analytics';
 import StaffForecast from './pages/StaffForecast';
+import Incentives from './pages/Incentives';
+import IncentiveConfig from './pages/IncentiveConfig';
+import Slots from './pages/Slots';
+import Addons from './pages/Addons';
 
 import Layout from './components/common/Layout';
 
@@ -83,6 +87,18 @@ function AppRoutes() {
           <ProtectedRoute adminOnly>
             <Layout>
               <AdminDashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ADMIN SLOTS */}
+      <Route
+        path="/admin/slots"
+        element={
+          <ProtectedRoute adminOnly>
+            <Layout>
+              <Slots />
             </Layout>
           </ProtectedRoute>
         }
@@ -179,6 +195,42 @@ function AppRoutes() {
           <ProtectedRoute adminOnly>
             <Layout>
               <StaffForecast />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* INCENTIVES (STUDENT) */}
+      <Route
+        path="/incentives"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Incentives />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* INCENTIVE CONFIG (ADMIN) */}
+      <Route
+        path="/admin/incentives"
+        element={
+          <ProtectedRoute adminOnly>
+            <Layout>
+              <IncentiveConfig />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ADDONS (USER) */}
+      <Route
+        path="/addons"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Addons />
             </Layout>
           </ProtectedRoute>
         }
