@@ -251,12 +251,13 @@ function IncentiveConfig() {
                             </div>
 
                             <div className="form-group">
-                                <label className="flex items-center gap-1" style={{ cursor: 'pointer' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
                                     <input
                                         type="checkbox"
                                         name="isActive"
                                         checked={formData.isActive}
                                         onChange={handleInputChange}
+                                        style={{ margin: 0 }}
                                     />
                                     <span>Rule is Active</span>
                                 </label>

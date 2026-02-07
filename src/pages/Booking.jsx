@@ -61,12 +61,17 @@ function Booking() {
         setSubmitting(true);
 
         try {
-            await bookingsAPI.create({
+            const response = await bookingsAPI.create({
                 slotId: selectedSlot._id,
                 menuItems: selectedItems
             });
-            setSuccess('Booking confirmed! Redirecting...');
-            setTimeout(() => navigate('/dashboard'), 2000);
+            setSuccess('Booking confirmed! Redirecting to claim addons...');
+            setTimeout(() => {
+                // Redirect to addon claim page with booking ID
+                navigate('/addons/claim', {
+                    state: { bookingId: response.data._id || response.data.id }
+                });
+            }, 2000);
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to create booking');
         } finally {

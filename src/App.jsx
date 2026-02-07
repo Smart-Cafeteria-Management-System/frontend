@@ -15,6 +15,7 @@ import Incentives from './pages/Incentives';
 import IncentiveConfig from './pages/IncentiveConfig';
 import Slots from './pages/Slots';
 import Addons from './pages/Addons';
+import AddonClaim from './pages/AddonClaim';
 
 import Layout from './components/common/Layout';
 
@@ -231,6 +232,18 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <Addons />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ADDON CLAIM (USER) */}
+      <Route
+        path="/addons/claim"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AddonClaim />
             </Layout>
           </ProtectedRoute>
         }
