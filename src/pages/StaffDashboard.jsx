@@ -44,6 +44,7 @@ function StaffDashboard() {
             await loadQueue();
         } catch (error) {
             console.error('Error calling next token:', error);
+            alert(error.response?.data?.error || 'Failed to call next token');
         } finally {
             setProcessing(false);
         }

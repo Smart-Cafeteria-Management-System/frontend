@@ -12,6 +12,7 @@ function UserDashboard() {
     const [forecasts, setForecasts] = useState([]);
     const [points, setPoints] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [canceling, setCanceling] = useState(false);
 
     useEffect(() => {
         loadUserData();
@@ -38,6 +39,24 @@ function UserDashboard() {
             console.error('Error loading user data:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleCancelBooking = async (bookingId) => {
+        if (!window.confirm('Are you sure you want to cancel this order?')) {
+            return;
+        }
+
+        setCanceling(true);
+        try {
+            await bookingsAPI.delete(bookingId);
+            alert('Order cancelled successfully!');
+            loadUserData(); // Reload data to reflect changes
+        } catch (error) {
+            console.error('Error cancelling booking:', error);
+            alert(error.response?.data?.error || 'Failed to cancel order');
+        } finally {
+            setCanceling(false);
         }
     };
 
@@ -144,6 +163,15 @@ function UserDashboard() {
                                     </div>
                                 ))}
                             </div>
+
+                            <button
+                                className="btn btn-error"
+                                style={{ width: '100%', marginTop: '1rem' }}
+                                onClick={() => handleCancelBooking(activeBooking._id)}
+                                disabled={canceling}
+                            >
+                                {canceling ? 'Cancelling...' : 'Cancel Order'}
+                            </button>
                         </div>
                     ) : (
                         <div className="text-center" style={{ padding: '2rem' }}>
