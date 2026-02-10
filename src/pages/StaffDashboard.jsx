@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { queueAPI, menuAPI } from '../services/api';
+import { queueAPI, menuAPI, bookingsAPI } from '../services/api';
 
 function StaffDashboard() {
     const [queueStatus, setQueueStatus] = useState(null);
@@ -57,6 +57,22 @@ function StaffDashboard() {
             await loadQueue();
         } catch (error) {
             console.error('Error marking served:', error);
+        } finally {
+            setProcessing(false);
+        }
+    };
+
+    const markNoShow = async (bookingId) => {
+        if (!confirm('Mark this booking as no-show? This will apply a -10 point penalty.')) {
+            return;
+        }
+        try {
+            setProcessing(true);
+            await bookingsAPI.update(bookingId, { status: 'no-show' });
+            await loadQueue();
+        } catch (error) {
+            console.error('Error marking no-show:', error);
+            alert(error.response?.data?.error || 'Failed to mark as no-show');
         } finally {
             setProcessing(false);
         }
@@ -121,15 +137,27 @@ function StaffDashboard() {
                     </button>
 
                     {queueStatus?.currentlyServing && (
-                        <button
-                            className="btn btn-success"
-                            onClick={() =>
-                                markServed(queueStatus.currentlyServing._id)
-                            }
-                            disabled={processing}
-                        >
-                            Mark Served
-                        </button>
+                        <>
+                            <button
+                                className="btn btn-success"
+                                onClick={() =>
+                                    markServed(queueStatus.currentlyServing._id)
+                                }
+                                disabled={processing}
+                            >
+                                Mark Served
+                            </button>
+
+                            <button
+                                className="btn btn-error"
+                                onClick={() =>
+                                    markNoShow(queueStatus.currentlyServing.bookingId)
+                                }
+                                disabled={processing}
+                            >
+                                Mark as No-Show
+                            </button>
+                        </>
                     )}
                 </div>
             </div>
