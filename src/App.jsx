@@ -181,7 +181,7 @@ function AppRoutes() {
       <Route
         path="/staff/forecast"
         element={
-          <ProtectedRoute staffOnly>
+          <ProtectedRoute>
             <Layout>
               <StaffForecast />
             </Layout>

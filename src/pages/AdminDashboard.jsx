@@ -18,7 +18,7 @@ function AdminDashboard() {
                 analyticsAPI.getDashboard(),
                 queueAPI.getStatus(),
                 forecastsAPI.getToday(),
-                bookingsAPI.getAll()
+                bookingsAPI.getAllAdmin()
             ]);
 
             setDashboard(dashboardRes.data);

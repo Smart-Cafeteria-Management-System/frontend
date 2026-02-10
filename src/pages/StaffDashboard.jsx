@@ -124,7 +124,7 @@ function StaffDashboard() {
                         <button
                             className="btn btn-success"
                             onClick={() =>
-                                markServed(queueStatus.currentlyServing.id)
+                                markServed(queueStatus.currentlyServing._id)
                             }
                             disabled={processing}
                         >
@@ -145,7 +145,7 @@ function StaffDashboard() {
 
                 <div className="queue-list">
                     {queueStatus?.waitingTokens?.map(token => (
-                        <div key={token.id} className="queue-item">
+                        <div key={token._id} className="queue-item">
                             <span className="queue-token">
                                 {token.tokenNumber}
                             </span>

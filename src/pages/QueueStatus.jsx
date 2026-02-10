@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { queueAPI } from '../services/api';
 
 function QueueStatus() {
-    const { isAdmin } = useAuth();
+    const { isAdmin, isStaff } = useAuth();
     const [queueStatus, setQueueStatus] = useState(null);
     const [myToken, setMyToken] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -98,7 +98,7 @@ function QueueStatus() {
                 <div className="card">
                     <div className="card-header">
                         <h3 className="card-title">Queue</h3>
-                        {isAdmin && (
+                        {(isAdmin || isStaff) && (
                             <button className="btn btn-primary btn-sm" onClick={handleCallNext}>
                                 Call Next
                             </button>
@@ -145,7 +145,7 @@ function QueueStatus() {
                                         Called
                                     </span>
                                 </div>
-                                {isAdmin && (
+                                {(isAdmin || isStaff) && (
                                     <button
                                         className="btn btn-sm btn-primary"
                                         onClick={() => handleServe(token._id)}

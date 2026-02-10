@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { addonsAPI, incentivesAPI } from '../services/api';
+import '../styles/global.css';
 
 function Addons() {
     const [addons, setAddons] = useState([]);
@@ -84,13 +85,13 @@ function Addons() {
             {/* Tabs */}
             <div className="tabs" style={{ marginBottom: 'var(--spacing-lg)' }}>
                 <button
-                    className={`tab-btn ${activeTab === 'addons' ? 'active' : ''}`}
+                    className={`tab ${activeTab === 'addons' ? 'active' : ''}`}
                     onClick={() => setActiveTab('addons')}
                 >
                     Available Add-ons
                 </button>
                 <button
-                    className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+                    className={`tab ${activeTab === 'history' ? 'active' : ''}`}
                     onClick={() => setActiveTab('history')}
                 >
                     My Redemptions
@@ -98,7 +99,7 @@ function Addons() {
             </div>
 
             {activeTab === 'addons' && (
-                <div className="grid-cards">
+                <div className="menu-grid">
                     {addons.length === 0 ? (
                         <p className="text-muted">No add-ons available at the moment.</p>
                     ) : (

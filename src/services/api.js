@@ -37,6 +37,7 @@ export const usersAPI = {
 // Bookings API
 export const bookingsAPI = {
     getAll: () => api.get('/bookings'),
+    getAllAdmin: () => api.get('/bookings/all'),
     getById: (id) => api.get(`/bookings/${id}`),
     create: (data) => api.post('/bookings', data),
     update: (id, data) => api.put(`/bookings/${id}`, data),

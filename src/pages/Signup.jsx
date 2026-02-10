@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function Signup() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [studentId, setStudentId] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
@@ -16,6 +17,11 @@ function Signup() {
         e.preventDefault();
         setError('');
 
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters');
+            return;
+        }
+
         if (password !== confirmPassword) {
             setError('Passwords do not match');
             return;
@@ -23,7 +29,7 @@ function Signup() {
 
         setLoading(true);
 
-        const result = await register({ name, email, password, role: 'student' });
+        const result = await register({ name, email, password, studentId, role: 'student' });
 
         if (!result.success) {
             setError(result.error);
@@ -83,6 +89,19 @@ function Signup() {
                     </div>
 
                     <div className="form-group">
+                        <label className="form-label" htmlFor="studentId">Student ID</label>
+                        <input
+                            id="studentId"
+                            type="text"
+                            className="form-input"
+                            value={studentId}
+                            onChange={(e) => setStudentId(e.target.value)}
+                            placeholder="e.g. STU001"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
                         <label className="form-label" htmlFor="password">Password</label>
                         <input
                             id="password"
@@ -91,8 +110,12 @@ function Signup() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Create a password"
+                            minLength={6}
                             required
                         />
+                        <small style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>
+                            Must be at least 6 characters
+                        </small>
                     </div>
 
                     <div className="form-group">
