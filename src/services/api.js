@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+/**
+ * API Service Layer
+ * Centralized Axios instance for communicating with the Go Backend.
+ * Handles authentication header injection and standardizes response formats.
+ */
+
 const API_URL = '/api';
 
 const api = axios.create({
@@ -9,7 +15,11 @@ const api = axios.create({
     }
 });
 
-// Add token to requests
+/**
+ * Request Interceptor
+ * Automatically attaches the JWT Bearer Token from localStorage to every outgoing request.
+ * This satisfies Epic 1 (Secure Access Control).
+ */
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -18,7 +28,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Auth API
+// Authentication & Profile Services (Epic 1)
 export const authAPI = {
     login: (credentials) => api.post('/auth/login', credentials),
     register: (data) => api.post('/auth/register', data),
@@ -26,7 +36,7 @@ export const authAPI = {
     updateProfile: (data) => api.put('/auth/me', data)
 };
 
-// Users API
+// User Profile Management (Epic 1)
 export const usersAPI = {
     getAll: () => api.get('/users'),
     getById: (id) => api.get(`/users/${id}`),
@@ -34,7 +44,7 @@ export const usersAPI = {
     delete: (id) => api.delete(`/users/${id}`)
 };
 
-// Bookings API
+// Meal Booking Management (Epic 3)
 export const bookingsAPI = {
     getAll: () => api.get('/bookings'),
     getAllAdmin: () => api.get('/bookings/all'),
@@ -44,7 +54,8 @@ export const bookingsAPI = {
     delete: (id) => api.delete(`/bookings/${id}`)
 };
 
-// Queue API
+// Real-time Queue & Token Management (Epic 3 & 6)
+// Enforces FIFO calling and provides position transparency.
 export const queueAPI = {
     getStatus: () => api.get('/queue/status'),
     getMyToken: () => api.get('/queue/my-token'),
@@ -52,6 +63,8 @@ export const queueAPI = {
     serve: (id) => api.put(`/queue/${id}/serve`),
     getHistory: () => api.get('/queue/history')
 };
+
+// Menu & Inventory Control (Epic 2)
 export const menuAPI = {
     getAll: () => api.get('/menu'),
     toggleAvailability: (id, available) =>
@@ -61,7 +74,7 @@ export const menuAPI = {
     deleteItem: (id) => api.delete(`/menu/${id}`)
 };
 
-// Slots API
+// Time Slot Configuration (Epic 3)
 export const slotsAPI = {
     getAll: () => api.get('/slots'),
     getToday: () => api.get('/slots/today'),
@@ -72,7 +85,8 @@ export const slotsAPI = {
     generate: (data) => api.post('/slots/generate', data)
 };
 
-// Forecasts API
+// AI Demand Forecasting (Epic 4)
+// Fetches week-ahead predictions from the ML service via the Go Backend.
 export const forecastsAPI = {
     getToday: () => api.get('/forecasts/today'),
     getWeek: () => api.get('/forecasts/week'),
@@ -83,7 +97,7 @@ export const forecastsAPI = {
     recordActualFromBookings: (date, mealType) => api.post('/forecasts/record-actual', { date, mealType })
 };
 
-// Waste API
+// Waste Tracking & Sustainability Logs (Epic 4)
 export const wasteAPI = {
     getAll: (params = {}) => api.get('/waste', { params }),
     getSummary: (days = 30) => api.get(`/waste/summary?days=${days}`),
@@ -92,18 +106,18 @@ export const wasteAPI = {
     delete: (id) => api.delete(`/waste/${id}`)
 };
 
-// Sustainability API
+// Sustainability Metrics (Epic 4.8)
 export const sustainabilityAPI = {
     getMetrics: () => api.get('/sustainability/metrics'),
     getReport: () => api.get('/sustainability/report')
 };
 
-// Preparation API
+// AI-Driven Preparation Recommendations (Epic 4.5)
 export const preparationAPI = {
     getRecommendations: (date) => api.get(`/preparation/recommendations${date ? `?date=${date}` : ''}`)
 };
 
-// Analytics API
+// Operational Dashboards & Analytics (Epic 2)
 export const analyticsAPI = {
     getDashboard: () => api.get('/analytics/dashboard'),
     getWasteReport: () => api.get('/analytics/waste-report'),
@@ -111,7 +125,8 @@ export const analyticsAPI = {
     getSummary: () => api.get('/analytics/summary')
 };
 
-// Incentives API
+// Point-Based Incentives (Epic 5)
+// Tracks and awards points for attendance and off-peak slot booking.
 export const incentivesAPI = {
     // User endpoints
     getMyPoints: () => api.get('/incentives/my-points'),
@@ -127,7 +142,7 @@ export const incentivesAPI = {
     applyToSlots: () => api.post('/incentives/apply-to-slots')
 };
 
-// Addons API
+// Addon Redemptions (Epic 5)
 export const addonsAPI = {
     // User endpoints
     getAll: () => api.get('/addons'),
@@ -142,5 +157,3 @@ export const addonsAPI = {
 };
 
 export default api;
-
-
