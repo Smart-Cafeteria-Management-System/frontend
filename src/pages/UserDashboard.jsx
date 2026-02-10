@@ -123,6 +123,14 @@ function UserDashboard() {
                         <div className="stat-card-subtext">View Rewards</div>
                     </div>
                 </Link>
+
+                <Link to="/ethics" style={{ textDecoration: 'none' }}>
+                    <div className="stat-card" style={{ cursor: 'pointer', borderColor: '#6366f1' }}>
+                        <div className="stat-card-label" style={{ color: '#6366f1' }}>Transparency</div>
+                        <div className="stat-card-value" style={{ fontSize: '1.5rem' }}>Rules & AI</div>
+                        <div className="stat-card-subtext">How it works</div>
+                    </div>
+                </Link>
             </div>
 
             <div className="dashboard-grid-2">

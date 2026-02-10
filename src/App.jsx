@@ -16,6 +16,7 @@ import IncentiveConfig from './pages/IncentiveConfig';
 import Slots from './pages/Slots';
 import Addons from './pages/Addons';
 import AddonClaim from './pages/AddonClaim';
+import Ethics from './pages/Ethics';
 
 import Layout from './components/common/Layout';
 
@@ -244,6 +245,18 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <AddonClaim />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ETHICS (PUBLIC OR PROTECTED) */}
+      <Route
+        path="/ethics"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Ethics />
             </Layout>
           </ProtectedRoute>
         }

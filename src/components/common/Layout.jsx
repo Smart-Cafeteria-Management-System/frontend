@@ -25,7 +25,8 @@ function Layout({ children }) {
             { path: '/menu', label: 'Menu' },
             { path: '/forecast', label: 'Forecast' },
             { path: '/analytics', label: 'Analytics' },
-            { path: '/admin/incentives', label: 'Incentives' }
+            { path: '/admin/incentives', label: 'Incentives' },
+            { path: '/ethics', label: 'Ethics & Rules' }
         ];
     }
 
@@ -35,7 +36,8 @@ function Layout({ children }) {
             { path: '/staff', label: 'Dashboard' },
             { path: '/queue', label: 'Queue' },
             { path: '/menu', label: 'Menu' },
-            { path: '/staff/forecast', label: 'Forecast' }
+            { path: '/staff/forecast', label: 'Forecast' },
+            { path: '/ethics', label: 'Ethics & Rules' }
         ];
     }
 
@@ -47,7 +49,8 @@ function Layout({ children }) {
             { path: '/queue', label: 'Queue Status' },
             { path: '/menu', label: 'Menu' },
             { path: '/incentives', label: 'Rewards' },
-            { path: '/addons', label: 'Free Add-ons' }
+            { path: '/addons', label: 'Free Add-ons' },
+            { path: '/ethics', label: 'Ethics & Rules' }
         ];
     }
 
