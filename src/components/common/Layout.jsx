@@ -26,7 +26,8 @@ function Layout({ children }) {
             { path: '/forecast', label: 'Forecast' },
             { path: '/analytics', label: 'Analytics' },
             { path: '/admin/incentives', label: 'Incentives' },
-            { path: '/ethics', label: 'Ethics & Rules' }
+            { path: '/ethics', label: 'Ethics & Rules' },
+            { path: '/admin/users', label: 'Users' }
         ];
     }
 

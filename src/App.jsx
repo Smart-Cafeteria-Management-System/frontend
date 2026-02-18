@@ -16,6 +16,7 @@ import IncentiveConfig from './pages/IncentiveConfig';
 import Slots from './pages/Slots';
 import Addons from './pages/Addons';
 import AddonClaim from './pages/AddonClaim';
+import Users from './pages/Users';
 import Ethics from './pages/Ethics';
 
 import Layout from './components/common/Layout';
@@ -226,6 +227,30 @@ function AppRoutes() {
         }
       />
 
+      {/* USERS (ADMIN) */}
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute adminOnly>
+            <Layout>
+              <Users />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ETHICS & RULES (ALL ROLES) */}
+      <Route
+        path="/ethics"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Ethics />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
       {/* ADDONS (USER) */}
       <Route
         path="/addons"
@@ -245,18 +270,6 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <AddonClaim />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-
-      {/* ETHICS (PUBLIC OR PROTECTED) */}
-      <Route
-        path="/ethics"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Ethics />
             </Layout>
           </ProtectedRoute>
         }

@@ -41,7 +41,9 @@ export const usersAPI = {
     getAll: () => api.get('/users'),
     getById: (id) => api.get(`/users/${id}`),
     update: (id, data) => api.put(`/users/${id}`, data),
-    delete: (id) => api.delete(`/users/${id}`)
+    delete: (id) => api.delete(`/users/${id}`),
+    block: (id) => api.put(`/users/${id}/block`),
+    unblock: (id) => api.put(`/users/${id}/unblock`)
 };
 
 // Meal Booking Management (Epic 3)
