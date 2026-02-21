@@ -1,8 +1,10 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
 function Layout({ children }) {
     const { user, logout, isAdmin, isStaff, isStudent } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -79,6 +81,13 @@ function Layout({ children }) {
                 </nav>
 
                 <div className="header-user">
+                    <button
+                        className="theme-toggle"
+                        onClick={toggleTheme}
+                        title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                    >
+                        {theme === 'light' ? '🌙' : '☀️'}
+                    </button>
                     <div className="header-user-info">
                         <div className="header-user-name">{user?.name}</div>
                         <div className="header-user-role">
