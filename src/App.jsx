@@ -18,6 +18,8 @@ import Addons from './pages/Addons';
 import AddonClaim from './pages/AddonClaim';
 import Users from './pages/Users';
 import Ethics from './pages/Ethics';
+import TotpSetup from './pages/TotpSetup';
+import AuditLogs from './pages/AuditLogs';
 
 import Layout from './components/common/Layout';
 
@@ -270,6 +272,42 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <AddonClaim />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ETHICS (PUBLIC OR PROTECTED) */}
+      <Route
+        path="/ethics"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Ethics />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* 2FA SETUP (ALL AUTHENTICATED USERS) */}
+      <Route
+        path="/security"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <TotpSetup />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* AUDIT LOGS (ADMIN ONLY) */}
+      <Route
+        path="/admin/audit-logs"
+        element={
+          <ProtectedRoute adminOnly>
+            <Layout>
+              <AuditLogs />
             </Layout>
           </ProtectedRoute>
         }
