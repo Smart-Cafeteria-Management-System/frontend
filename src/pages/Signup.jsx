@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Signup() {
@@ -11,6 +12,7 @@ function Signup() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { register } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -46,6 +48,14 @@ function Signup() {
 
     return (
         <div className="login-container">
+            <button
+                className="theme-toggle"
+                onClick={toggleTheme}
+                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                style={{ position: 'fixed', top: '1.5rem', right: '1.5rem', zIndex: 10 }}
+            >
+                {theme === 'light' ? '🌙' : '☀️'}
+            </button>
             <div className="login-card">
                 <h1 className="login-title">Smart Cafeteria</h1>
                 <p className="login-subtitle">Create your account</p>
