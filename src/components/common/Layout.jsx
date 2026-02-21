@@ -26,6 +26,8 @@ function Layout({ children }) {
             { path: '/forecast', label: 'Forecast' },
             { path: '/analytics', label: 'Analytics' },
             { path: '/admin/incentives', label: 'Incentives' },
+            { path: '/admin/audit-logs', label: 'Audit Logs' },
+            { path: '/security', label: 'Security' },
             { path: '/ethics', label: 'Ethics & Rules' },
             { path: '/admin/users', label: 'Users' }
         ];
@@ -38,6 +40,7 @@ function Layout({ children }) {
             { path: '/queue', label: 'Queue' },
             { path: '/menu', label: 'Menu' },
             { path: '/staff/forecast', label: 'Forecast' },
+            { path: '/security', label: 'Security' },
             { path: '/ethics', label: 'Ethics & Rules' }
         ];
     }
@@ -51,6 +54,7 @@ function Layout({ children }) {
             { path: '/menu', label: 'Menu' },
             { path: '/incentives', label: 'Rewards' },
             { path: '/addons', label: 'Free Add-ons' },
+            { path: '/security', label: 'Security' },
             { path: '/ethics', label: 'Ethics & Rules' }
         ];
     }
