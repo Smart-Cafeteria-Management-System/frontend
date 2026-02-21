@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import { authAPI, totpAPI } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -20,17 +20,62 @@ export function AuthProvider({ children }) {
     const login = async (email, password) => {
         try {
             const response = await authAPI.login({ email, password });
-            const userData = response.data;
+            const data = response.data;
 
-            localStorage.setItem('token', userData.token);
-            localStorage.setItem('user', JSON.stringify(userData));
-            setUser(userData);
+            if (data.totp_setup_required) {
+                return { success: false, totpSetupRequired: true, tempToken: data.temp_token };
+            }
+            if (data.totp_required) {
+                return { success: false, totpRequired: true, tempToken: data.temp_token };
+            }
 
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data));
+            setUser(data);
             return { success: true };
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.message || 'Login failed'
+                error: error.response?.data?.error || error.response?.data?.message || 'Login failed'
+            };
+        }
+    };
+
+    const firstSetupTotp = async (tempToken) => {
+        try {
+            const response = await totpAPI.firstSetup(tempToken);
+            return { success: true, qrCode: response.data.qrCode, secret: response.data.secret };
+        } catch (error) {
+            return { success: false, error: error.response?.data?.error || 'Failed to initiate 2FA setup' };
+        }
+    };
+
+    const firstConfirmTotp = async (tempToken, code) => {
+        try {
+            const response = await totpAPI.firstConfirm(tempToken, code);
+            const data = response.data;
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data));
+            setUser(data);
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.response?.data?.error || 'Invalid OTP code' };
+        }
+    };
+
+    const verifyTotp = async (tempToken, code) => {
+        try {
+            const response = await authAPI.verifyTotp(tempToken, code);
+            const data = response.data;
+
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data));
+            setUser(data);
+            return { success: true };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.error || 'Invalid OTP code'
             };
         }
     };
@@ -38,9 +83,6 @@ export function AuthProvider({ children }) {
     const register = async (userData) => {
         try {
             const response = await authAPI.register(userData);
-            // Assuming the backend returns the same structure as login (token + user)
-            // If it only returns success message, we might need to redirect to login
-            // But usually auto-login is better UX
             const data = response.data;
 
             if (data.token) {
@@ -49,11 +91,11 @@ export function AuthProvider({ children }) {
                 setUser(data);
             }
 
-            return { success: true, data: data };
+            return { success: true, data };
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.message || 'Registration failed'
+                error: error.response?.data?.error || error.response?.data?.message || 'Registration failed'
             };
         }
     };
@@ -67,6 +109,9 @@ export function AuthProvider({ children }) {
     const value = {
         user,
         login,
+        verifyTotp,
+        firstSetupTotp,
+        firstConfirmTotp,
         register,
         logout,
         loading,
@@ -75,7 +120,6 @@ export function AuthProvider({ children }) {
         isStaff: user?.role === 'staff',
         isStudent: user?.role === 'student'
     };
-
 
     return (
         <AuthContext.Provider value={value}>
