@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 const STEP_PASSWORD = 'password';
 const STEP_SETUP = 'setup';    // mandatory first-time 2FA enrollment
@@ -18,6 +19,7 @@ function Login() {
     const [loading, setLoading] = useState(false);
 
     const { login, verifyTotp, firstSetupTotp, firstConfirmTotp } = useAuth();
+    const { theme, toggleTheme } = useTheme();
 
     // Step 1 — password
     const handlePasswordSubmit = async (e) => {
@@ -78,6 +80,14 @@ function Login() {
 
     return (
         <div className="login-container">
+            <button
+                className="theme-toggle"
+                onClick={toggleTheme}
+                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+                style={{ position: 'fixed', top: '1.5rem', right: '1.5rem', zIndex: 10 }}
+            >
+                {theme === 'light' ? '🌙' : '☀️'}
+            </button>
             <div className="login-card">
                 <h1 className="login-title">Smart Cafeteria</h1>
 
