@@ -33,7 +33,24 @@ export const authAPI = {
     login: (credentials) => api.post('/auth/login', credentials),
     register: (data) => api.post('/auth/register', data),
     getProfile: () => api.get('/auth/me'),
-    updateProfile: (data) => api.put('/auth/me', data)
+    updateProfile: (data) => api.put('/auth/me', data),
+    verifyTotp: (tempToken, code) => api.post('/auth/verify-totp', { tempToken, code })
+};
+
+// TOTP / Two-Factor Authentication
+export const totpAPI = {
+    getStatus: () => api.get('/auth/totp/status'),
+    setup: () => api.post('/auth/totp/setup'),
+    confirm: (code) => api.post('/auth/totp/confirm', { code }),
+    disable: (password, code) => api.delete('/auth/totp/disable', { data: { password, code } }),
+    // Mandatory first-time setup during login (uses temp token, no JWT needed)
+    firstSetup: (tempToken) => api.post('/auth/totp/first-setup', { tempToken }),
+    firstConfirm: (tempToken, code) => api.post('/auth/totp/first-confirm', { tempToken, code })
+};
+
+// Audit Logs (admin only)
+export const auditAPI = {
+    getLogs: (params = {}) => api.get('/audit-logs', { params })
 };
 
 // User Profile Management (Epic 1)
