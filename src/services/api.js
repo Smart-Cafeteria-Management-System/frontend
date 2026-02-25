@@ -128,7 +128,8 @@ export const wasteAPI = {
 // Sustainability Metrics (Epic 4.8)
 export const sustainabilityAPI = {
     getMetrics: () => api.get('/sustainability/metrics'),
-    getReport: () => api.get('/sustainability/report')
+    getReport: () => api.get('/sustainability/report'),
+    downloadCSV: () => api.get('/sustainability/report/csv', { responseType: 'blob' })
 };
 
 // AI-Driven Preparation Recommendations (Epic 4.5)

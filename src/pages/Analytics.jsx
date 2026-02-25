@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { analyticsAPI, forecastsAPI } from '../services/api';
+import { analyticsAPI, forecastsAPI, sustainabilityAPI } from '../services/api';
 
 function Analytics() {
     const [summary, setSummary] = useState(null);
@@ -7,6 +7,7 @@ function Analytics() {
     const [demandTrends, setDemandTrends] = useState(null);
     const [forecasts, setForecasts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [downloading, setDownloading] = useState(false);
 
     useEffect(() => {
         loadAnalytics();
@@ -32,15 +33,46 @@ function Analytics() {
         }
     };
 
+    const handleDownloadReport = async () => {
+        setDownloading(true);
+        try {
+            const response = await sustainabilityAPI.downloadCSV();
+            const blob = new Blob([response.data], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `sustainability_report_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading report:', error);
+            alert('Failed to download report. Please try again.');
+        } finally {
+            setDownloading(false);
+        }
+    };
+
     if (loading) {
         return <div className="text-center">Loading analytics...</div>;
     }
 
     return (
         <div>
-            <div className="page-header">
-                <h1 className="page-title">Analytics Dashboard</h1>
-                <p className="page-subtitle">System performance and sustainability metrics</p>
+            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                    <h1 className="page-title">Analytics Dashboard</h1>
+                    <p className="page-subtitle">System performance and sustainability metrics</p>
+                </div>
+                <button
+                    className="btn btn-primary"
+                    onClick={handleDownloadReport}
+                    disabled={downloading}
+                    style={{ whiteSpace: 'nowrap' }}
+                >
+                    {downloading ? ' Generating...' : 'Download Sustainability Report'}
+                </button>
             </div>
 
             {/* Summary Stats */}
@@ -76,8 +108,8 @@ function Analytics() {
                     <div className="card-header">
                         <h3 className="card-title">Waste Management</h3>
                         <span className={`badge ${wasteReport?.trend === 'good' ? 'badge-success' :
-                                wasteReport?.trend === 'moderate' ? 'badge-warning' :
-                                    'badge-error'
+                            wasteReport?.trend === 'moderate' ? 'badge-warning' :
+                                'badge-error'
                             }`}>
                             {wasteReport?.trend || 'N/A'}
                         </span>
