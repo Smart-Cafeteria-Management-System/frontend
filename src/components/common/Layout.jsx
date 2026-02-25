@@ -3,7 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
 function Layout({ children }) {
-    const { user, logout, isAdmin, isStaff, isStudent } = useAuth();
+    const { user, logout, isAdmin, isStaff, isStudent, sessionWarning, extendSession } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
@@ -102,6 +102,36 @@ function Layout({ children }) {
                     </button>
                 </div>
             </header>
+
+            {sessionWarning && (
+                <div style={{
+                    background: 'linear-gradient(90deg, #f59e0b, #d97706)',
+                    color: '#fff',
+                    padding: '0.75rem 1.5rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    zIndex: 1000
+                }}>
+                    <span>Your session will expire in less than 1 minute due to inactivity.</span>
+                    <button
+                        onClick={extendSession}
+                        style={{
+                            background: '#fff',
+                            color: '#d97706',
+                            border: 'none',
+                            padding: '0.4rem 1rem',
+                            borderRadius: '6px',
+                            fontWeight: 600,
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Stay Logged In
+                    </button>
+                </div>
+            )}
 
             <main className="main-content">
                 {children}
