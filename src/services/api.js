@@ -34,7 +34,9 @@ export const authAPI = {
     register: (data) => api.post('/auth/register', data),
     getProfile: () => api.get('/auth/me'),
     updateProfile: (data) => api.put('/auth/me', data),
-    verifyTotp: (tempToken, code) => api.post('/auth/verify-totp', { tempToken, code })
+    verifyTotp: (tempToken, code) => api.post('/auth/verify-totp', { tempToken, code }),
+    forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+    resetPassword: (token, newPassword) => api.post('/auth/reset-password', { token, newPassword })
 };
 
 // TOTP / Two-Factor Authentication
@@ -60,7 +62,8 @@ export const usersAPI = {
     update: (id, data) => api.put(`/users/${id}`, data),
     delete: (id) => api.delete(`/users/${id}`),
     block: (id) => api.put(`/users/${id}/block`),
-    unblock: (id) => api.put(`/users/${id}/unblock`)
+    unblock: (id) => api.put(`/users/${id}/unblock`),
+    changeRole: (id, role) => api.put(`/users/${id}/role`, { role })
 };
 
 // Meal Booking Management (Epic 3)

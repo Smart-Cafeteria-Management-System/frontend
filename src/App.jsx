@@ -21,6 +21,7 @@ import Users from './pages/Users';
 import Ethics from './pages/Ethics';
 import TotpSetup from './pages/TotpSetup';
 import AuditLogs from './pages/AuditLogs';
+import ForgotPassword from './pages/ForgotPassword';
 
 import Layout from './components/common/Layout';
 
@@ -82,6 +83,20 @@ function AppRoutes() {
                 <Navigate to="/dashboard" />
           ) : (
             <Signup />
+          )
+        }
+      />
+
+      {/* FORGOT PASSWORD */}
+      <Route
+        path="/forgot-password"
+        element={
+          isAuthenticated ? (
+            isAdmin ? <Navigate to="/admin" /> :
+              isStaff ? <Navigate to="/staff" /> :
+                <Navigate to="/dashboard" />
+          ) : (
+            <ForgotPassword />
           )
         }
       />

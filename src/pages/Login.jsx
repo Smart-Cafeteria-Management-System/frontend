@@ -125,6 +125,9 @@ function Login() {
                                 Don't have an account?{' '}
                                 <Link to="/signup" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign Up</Link>
                             </p>
+                            <p className="text-sm text-muted" style={{ marginTop: '0.5rem' }}>
+                                <Link to="/forgot-password" style={{ color: 'var(--primary)', fontWeight: 600 }}>Forgot Password?</Link>
+                            </p>
                         </div>
 
                         <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'var(--gray-50)', borderRadius: 'var(--radius-md)' }}>
