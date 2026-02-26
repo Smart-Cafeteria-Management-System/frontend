@@ -19,12 +19,17 @@ function Layout({ children }) {
     let navLinks = [];
 
     // ADMIN NAV
+    let mainLinks = [];
+    let mgmtLinks = [];
+
     if (isAdmin) {
-        navLinks = [
+        mainLinks = [
             { path: '/admin', label: 'Dashboard' },
-            { path: '/admin/slots', label: 'Slots' },
             { path: '/queue', label: 'Queue' },
-            { path: '/menu', label: 'Menu' },
+            { path: '/menu', label: 'Menu' }
+        ];
+        mgmtLinks = [
+            { path: '/admin/slots', label: 'Slots' },
             { path: '/forecast', label: 'Forecast' },
             { path: '/analytics', label: 'Analytics' },
             { path: '/admin/incentives', label: 'Incentives' },
@@ -37,7 +42,7 @@ function Layout({ children }) {
 
     // STAFF NAV
     else if (isStaff) {
-        navLinks = [
+        mainLinks = [
             { path: '/staff', label: 'Dashboard' },
             { path: '/queue', label: 'Queue' },
             { path: '/menu', label: 'Menu' },
@@ -49,7 +54,7 @@ function Layout({ children }) {
 
     // STUDENT NAV
     else if (isStudent) {
-        navLinks = [
+        mainLinks = [
             { path: '/dashboard', label: 'Dashboard' },
             { path: '/booking', label: 'Book Meal' },
             { path: '/queue', label: 'Queue Status' },
@@ -69,7 +74,7 @@ function Layout({ children }) {
                 </div>
 
                 <nav className="header-nav">
-                    {navLinks.map(link => (
+                    {mainLinks.map(link => (
                         <NavLink
                             key={link.path}
                             to={link.path}
@@ -78,6 +83,23 @@ function Layout({ children }) {
                             {link.label}
                         </NavLink>
                     ))}
+
+                    {mgmtLinks.length > 0 && (
+                        <div className="nav-dropdown">
+                            <button className="nav-dropdown-btn">Management ▾</button>
+                            <div className="nav-dropdown-content">
+                                {mgmtLinks.map(link => (
+                                    <NavLink
+                                        key={link.path}
+                                        to={link.path}
+                                        className={({ isActive }) => isActive ? 'active' : ''}
+                                    >
+                                        {link.label}
+                                    </NavLink>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </nav>
 
                 <div className="header-user">
