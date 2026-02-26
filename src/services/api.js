@@ -187,7 +187,9 @@ export const operatingHoursAPI = {
 
 // System Health Monitoring (US-AM-5)
 export const systemAPI = {
-    getHealth: () => api.get('/health')
+    getHealth: () => api.get('/health'),
+    getSettings: () => api.get('/system/settings'),
+    updateSettings: (data) => api.put('/system/settings', data)
 };
 
 export default api;
