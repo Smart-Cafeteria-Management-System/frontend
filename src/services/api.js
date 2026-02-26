@@ -179,4 +179,15 @@ export const addonsAPI = {
     claim: (code) => api.post('/addons/claim', { code })
 };
 
+// Operating Hours Configuration (US-AM-4)
+export const operatingHoursAPI = {
+    getAll: () => api.get('/operating-hours'),
+    update: (id, data) => api.put(`/operating-hours/${id}`, data)
+};
+
+// System Health Monitoring (US-AM-5)
+export const systemAPI = {
+    getHealth: () => api.get('/health')
+};
+
 export default api;
