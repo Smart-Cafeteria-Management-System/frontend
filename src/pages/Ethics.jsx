@@ -1,94 +1,392 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { queueAPI } from '../services/api';
 
-const Ethics = () => {
+function Ethics() {
+  const { isAdmin, isStaff, isStudent, user } = useAuth();
+  const [fairness, setFairness] = useState(null);
+  const [loadingFairness, setLoadingFairness] = useState(true);
+
+  useEffect(() => {
+    loadFairness();
+  }, []);
+
+  const loadFairness = async () => {
+    try {
+      const res = await queueAPI.getFairness(7);
+      setFairness(res.data);
+    } catch (err) {
+      console.error('Failed to load fairness data:', err);
+    } finally {
+      setLoadingFairness(false);
+    }
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 80) return 'var(--success)';
+    if (score >= 50) return 'var(--warning)';
+    return 'var(--error)';
+  };
+
+  const getScoreBadge = (score) => {
+    if (score >= 80) return 'badge-success';
+    if (score >= 50) return 'badge-warning';
+    return 'badge-error';
+  };
+
+  const roleLabel = isAdmin ? 'Administrator' : isStaff ? 'Staff' : 'Student';
+
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-8 text-indigo-700">⚖️ Ethics, Transparency & Operation Rules</h1>
-
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-8">
-        <p className="text-gray-700 mb-4">
-          We are committed to building a fair and responsibly designed system. This page outlines the specific rules governing queue management and data usage.
+    <div>
+      <div className="page-header">
+        <h1 className="page-title">Ethics & Transparency</h1>
+        <p className="page-subtitle">
+          Fairness principles, operational rules, and live equity metrics — tailored for your role as {roleLabel}
         </p>
       </div>
 
-      <div className="grid gap-8">
-        {/* Section 1 */}
-        <div className="bg-white shadow-md rounded-lg p-6 border-l-4 border-indigo-500">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">1. Operations & Queue Management ("The Rules")</h2>
-          <p className="text-gray-600 mb-4">To ensure fairness, the system adheres to strict algorithmic rules that cannot be overridden by standard staff users:</p>
-          
-          <ul className="list-disc pl-6 space-y-4 text-gray-700">
-            <li>
-              <strong className="text-indigo-600">Strict FIFO (First-In-First-Out):</strong>
-              <p className="mt-1">Queue positions are assigned based strictly on the timestamp of your booking. There is no "pay-to-skip" or "VIP" priority lane. Every student waits their turn.</p>
-            </li>
-            <li>
-              <strong className="text-indigo-600">Dynamic Wait Time Calculation:</strong>
-              <p className="mt-1">We do not use arbitrary wait times. Your estimated wait time is calculated by:</p>
-              <ul className="list-circle pl-6 mt-2 space-y-1 text-sm text-gray-600">
-                <li>Summing the actual <strong>preparation time</strong> of every single item ordered by students ahead of you.</li>
-                <li>Adding a <strong>1-minute buffer</strong> per order for handover/operations.</li>
-              </ul>
-              <div className="mt-2 text-sm bg-blue-50 p-2 rounded text-blue-800">
-                <em>Transparency Note:</em> This means if the person ahead of you ordered 5 distinct meals, your wait time will reflect the reality of cooking them, not just "1 person ahead".
+      {/* ========== LIVE FAIRNESS INDICATORS (US-ET-8) ========== */}
+      <div className="card" style={{ marginBottom: 'var(--spacing-xl)' }}>
+        <div className="card-header">
+          <h3 className="card-title">Live Fairness Indicators</h3>
+          {fairness && (
+            <span className={`badge ${getScoreBadge(fairness.fairnessScore)}`}>
+              Score: {fairness.fairnessScore}/100
+            </span>
+          )}
+        </div>
+
+        {loadingFairness ? (
+          <div className="text-center text-muted">Loading fairness metrics...</div>
+        ) : fairness ? (
+          <>
+            <div className="dashboard-grid">
+              <div className="stat-card">
+                <div className="stat-card-label">Fairness Score</div>
+                <div className="stat-card-value" style={{ color: getScoreColor(fairness.fairnessScore) }}>
+                  {fairness.fairnessScore}
+                </div>
+                <div className="stat-card-subtext">out of 100</div>
               </div>
-            </li>
-            <li>
-              <strong className="text-indigo-600">Slot Capacity & Fairness:</strong>
-              <p className="mt-1">Meal slots have a hard capacity limit. Once <code>booked_count &ge; capacity</code>, the system automatically locks the slot. This prevents overcrowding and ensures the kitchen is not overwhelmed.</p>
-            </li>
-            <li>
-              <strong className="text-indigo-600">No-Show Policy:</strong>
-              <p className="mt-1">If you book a meal but do not claim it ("No-Show"), the system records this. Repeated no-shows may lead to penalties or lower priority in future incentive programs.</p>
-            </li>
-          </ul>
-        </div>
 
-        {/* Section 2 */}
-        <div className="bg-white shadow-md rounded-lg p-6 border-l-4 border-green-500">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">2. Data Privacy & User Rights</h2>
-          <ul className="space-y-3 text-gray-700">
-            <li className="flex items-start">
-              <span className="mr-2 mt-1 text-green-500">✔</span>
-              <span><strong>Data Minimization:</strong> We only collect data essential for order processing and demand forecasting (e.g., historical orders, basic profile info).</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 mt-1 text-green-500">✔</span>
-              <span><strong>Purpose Limitation:</strong> User data is used <em>solely</em> for improving cafeteria services. It is never sold or shared with third-party advertisers.</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2 mt-1 text-green-500">✔</span>
-              <span><strong>Right to be Forgotten:</strong> Users can request the deletion of their account and personal data from our active databases.</span>
-            </li>
-          </ul>
-        </div>
+              <div className="stat-card">
+                <div className="stat-card-label">FIFO Compliance</div>
+                <div className="stat-card-value" style={{ color: getScoreColor(fairness.fifoCompliance) }}>
+                  {fairness.fifoCompliance?.toFixed(1)}%
+                </div>
+                <div className="stat-card-subtext">Correct serving order</div>
+              </div>
 
-        {/* Section 3 */}
-        <div className="bg-white shadow-md rounded-lg p-6 border-l-4 border-purple-500">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">3. Algorithmic Transparency (AI Model)</h2>
-          <p className="text-gray-600 mb-4">The Machine Learning component is used strictly to <strong>forecast aggregate demand</strong> (e.g., "How many burgers will we sell on Tuesday?").</p>
-          
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-gray-50 p-4 rounded">
-              <h3 className="font-semibold text-purple-700 mb-2">Input Features</h3>
-              <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
-                <li>Historical Sales Volume</li>
-                <li>Weather Conditions</li>
-                <li>Academic Calendar (Holidays, Exams)</li>
-                <li>Day of the Week</li>
-              </ul>
+              <div className="stat-card">
+                <div className="stat-card-label">Avg Wait Time</div>
+                <div className="stat-card-value primary">
+                  {fairness.avgWaitMinutes?.toFixed(1)}
+                </div>
+                <div className="stat-card-subtext">Minutes</div>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-card-label">Tokens Served</div>
+                <div className="stat-card-value">
+                  {fairness.totalTokens}
+                </div>
+                <div className="stat-card-subtext">{fairness.period}</div>
+              </div>
             </div>
-            <div className="bg-gray-50 p-4 rounded flex items-center justify-center">
-               <p className="text-center text-gray-700 font-medium">
-                 🚫 No Individual Profiling <br/>
-                 <span className="text-sm font-normal text-gray-500">The AI does not track or predict individual student eating habits.</span>
-               </p>
+
+            {/* Per-slot table visible to Admin & Staff */}
+            {(isAdmin || isStaff) && fairness.slotMetrics?.length > 0 && (
+              <div>
+                <div className="text-sm font-bold" style={{ marginBottom: 'var(--spacing-sm)' }}>
+                  Per-Slot Breakdown (Admin/Staff)
+                </div>
+                <div className="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Meal</th>
+                        <th>Served</th>
+                        <th>Avg Wait</th>
+                        <th>Min</th>
+                        <th>Max</th>
+                        <th>Std Dev</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fairness.slotMetrics.map((slot, idx) => (
+                        <tr key={idx}>
+                          <td>{slot.date}</td>
+                          <td style={{ textTransform: 'capitalize' }}>{slot.mealType}</td>
+                          <td>{slot.tokensServed}</td>
+                          <td>{slot.avgWaitMinutes?.toFixed(1)} min</td>
+                          <td>{slot.minWaitMinutes?.toFixed(1)}</td>
+                          <td>{slot.maxWaitMinutes?.toFixed(1)}</td>
+                          <td>
+                            <span className={`badge ${slot.stdDevWaitMinutes < 2 ? 'badge-success' : slot.stdDevWaitMinutes < 5 ? 'badge-warning' : 'badge-error'}`}>
+                              ±{slot.stdDevWaitMinutes?.toFixed(1)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {(!fairness.slotMetrics || fairness.slotMetrics.length === 0) && (
+              <div className="text-center text-muted" style={{ padding: 'var(--spacing-md)' }}>
+                No service data in the last 7 days to compute per-slot metrics.
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center text-muted">Unable to load fairness data.</div>
+        )}
+      </div>
+
+      {/* ========== ROLE-SPECIFIC CONTENT ========== */}
+      <div className="dashboard-grid-2">
+
+        {/* QUEUE RULES — Visible to ALL */}
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Queue Management Rules</h3>
+            <span className="badge badge-info">All Users</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">Strict FIFO Ordering</div>
+                <div className="text-xs text-muted">
+                  Positions assigned by booking timestamp. No pay-to-skip or VIP priority.
+                </div>
+              </div>
+              <span className="badge badge-success">Enforced</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">Dynamic Wait Calculation</div>
+                <div className="text-xs text-muted">
+                  Based on actual prep time of items ahead + 1 min buffer per order.
+                </div>
+              </div>
+              <span className="badge badge-success">Transparent</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">Slot Capacity Enforcement</div>
+                <div className="text-xs text-muted">
+                  Once booked count reaches capacity, the slot automatically locks.
+                </div>
+              </div>
+              <span className="badge badge-success">Automatic</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">No-Show Policy</div>
+                <div className="text-xs text-muted">
+                  Repeated no-shows incur point penalties and are tracked in abuse reports.
+                </div>
+              </div>
+              <span className="badge badge-warning">Tracked</span>
+            </div>
+          </div>
+        </div>
+
+        {/* DATA PRIVACY — Visible to ALL */}
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Data Privacy & User Rights</h3>
+            <span className="badge badge-info">All Users</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">Data Minimization</div>
+                <div className="text-xs text-muted">
+                  Only essential data collected: orders, profile info, and timestamps.
+                </div>
+              </div>
+              <span className="badge badge-success">✓</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">Purpose Limitation</div>
+                <div className="text-xs text-muted">
+                  Data used solely for cafeteria services. Never sold or shared.
+                </div>
+              </div>
+              <span className="badge badge-success">✓</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">Right to Deletion</div>
+                <div className="text-xs text-muted">
+                  Users can request complete removal of their account and personal data.
+                </div>
+              </div>
+              <span className="badge badge-success">✓</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">No Individual Profiling</div>
+                <div className="text-xs text-muted">
+                  AI forecasts aggregate demand only — no per-student eating habit tracking.
+                </div>
+              </div>
+              <span className="badge badge-success">✓</span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* ========== STUDENT-SPECIFIC SECTION ========== */}
+      {isStudent && (
+        <div className="card" style={{ marginTop: 'var(--spacing-xl)' }}>
+          <div className="card-header">
+            <h3 className="card-title">Your Rights as a Student</h3>
+            <span className="badge badge-info">Student</span>
+          </div>
+          <div className="dashboard-grid-3" style={{ marginBottom: 0 }}>
+            <div>
+              <div className="text-sm text-muted mb-1">Equal Queue Access</div>
+              <div className="font-bold">Your token position is based entirely on when you booked — no staff overrides.</div>
+            </div>
+            <div>
+              <div className="text-sm text-muted mb-1">Transparent Incentives</div>
+              <div className="font-bold">Point rules are published openly. You can view exactly how and when points are awarded or deducted.</div>
+            </div>
+            <div>
+              <div className="text-sm text-muted mb-1">Live Wait Visibility</div>
+              <div className="font-bold">See your real-time queue position and estimated wait. The system never hides your place in line.</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========== STAFF-SPECIFIC SECTION ========== */}
+      {(isStaff || isAdmin) && (
+        <div className="card" style={{ marginTop: 'var(--spacing-xl)' }}>
+          <div className="card-header">
+            <h3 className="card-title">Staff Serving Guidelines</h3>
+            <span className="badge badge-warning">Staff / Admin</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-md)' }}>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">Call-Next Only</div>
+                <div className="text-xs text-muted">
+                  Staff must use "Call Next" — the system always picks the next token in FIFO order. Manual selection is disabled.
+                </div>
+              </div>
+              <span className="badge badge-error">Restricted</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">No Queue Reordering</div>
+                <div className="text-xs text-muted">
+                  There is no API or UI to reorder tokens. This eliminates favoritism risk.
+                </div>
+              </div>
+              <span className="badge badge-error">Locked</span>
+            </div>
+            <div className="queue-item">
+              <div>
+                <div className="font-bold">All Actions Logged</div>
+                <div className="text-xs text-muted">
+                  Every call-next, serve, and status change is recorded in the immutable audit log with your user ID.
+                </div>
+              </div>
+              <span className="badge badge-warning">Audited</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========== ADMIN-ONLY: AI TRANSPARENCY ========== */}
+      {isAdmin && (
+        <div className="card" style={{ marginTop: 'var(--spacing-xl)' }}>
+          <div className="card-header">
+            <h3 className="card-title">AI Model Transparency</h3>
+            <span className="badge badge-error">Admin Only</span>
+          </div>
+
+          <div className="dashboard-grid-2">
+            <div>
+              <div className="text-sm text-muted mb-1">Input Features Used</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                {['Historical Sales Volume', 'Weather Conditions (via API)', 'Academic Calendar (Holidays, Exams)', 'Day of Week + Meal Type'].map((f, i) => (
+                  <div key={i} className="queue-item" style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>
+                    <span className="text-sm">{f}</span>
+                    <span className="badge badge-success">Active</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-muted mb-1">Safeguards</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
+                <div className="queue-item" style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>
+                  <span className="text-sm">No individual profiling</span>
+                  <span className="badge badge-success">✓</span>
+                </div>
+                <div className="queue-item" style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>
+                  <span className="text-sm">Aggregate demand forecasting only</span>
+                  <span className="badge badge-success">✓</span>
+                </div>
+                <div className="queue-item" style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>
+                  <span className="text-sm">Model accuracy tracked via RMSE</span>
+                  <span className="badge badge-success">✓</span>
+                </div>
+                <div className="queue-item" style={{ padding: 'var(--spacing-sm) var(--spacing-md)' }}>
+                  <span className="text-sm">Immutable audit logs for all actions</span>
+                  <span className="badge badge-success">✓</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========== ADMIN-ONLY: ACCOUNTABILITY ========== */}
+      {isAdmin && (
+        <div className="card" style={{ marginTop: 'var(--spacing-xl)' }}>
+          <div className="card-header">
+            <h3 className="card-title">Admin Accountability</h3>
+            <span className="badge badge-error">Admin Only</span>
+          </div>
+          <div className="dashboard-grid-3" style={{ marginBottom: 0 }}>
+            <div>
+              <div className="text-sm text-muted mb-1">Audit Logs</div>
+              <div className="font-bold">
+                All admin actions (settings changes, user blocks, role changes) are permanently recorded.
+              </div>
+              <a href="/audit-logs" className="btn btn-secondary btn-sm" style={{ marginTop: 'var(--spacing-sm)' }}>
+                View Audit Logs
+              </a>
+            </div>
+            <div>
+              <div className="text-sm text-muted mb-1">Abuse Detection</div>
+              <div className="font-bold">
+                The system auto-flags users with 30%+ no-show rate. Review flagged users in incentive config.
+              </div>
+              <a href="/admin/incentive-config" className="btn btn-secondary btn-sm" style={{ marginTop: 'var(--spacing-sm)' }}>
+                View Abuse Report
+              </a>
+            </div>
+            <div>
+              <div className="text-sm text-muted mb-1">Fairness Review</div>
+              <div className="font-bold">
+                Use per-slot fairness metrics above to verify equitable service. Investigate slots with high std deviation.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default Ethics;
