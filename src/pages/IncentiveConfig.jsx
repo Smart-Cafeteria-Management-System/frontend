@@ -4,6 +4,7 @@ import { incentivesAPI } from '../services/api';
 function IncentiveConfig() {
     const [rules, setRules] = useState([]);
     const [abuseReport, setAbuseReport] = useState(null);
+    const [behaviorTrends, setBehaviorTrends] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [editingRule, setEditingRule] = useState(null);
@@ -28,12 +29,14 @@ function IncentiveConfig() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const [rulesRes, abuseRes] = await Promise.all([
+            const [rulesRes, abuseRes, trendsRes] = await Promise.all([
                 incentivesAPI.getRules(),
-                incentivesAPI.getAbuseReport()
+                incentivesAPI.getAbuseReport(),
+                incentivesAPI.getBehaviorTrends(30)
             ]);
             setRules(rulesRes.data || []);
             setAbuseReport(abuseRes.data);
+            setBehaviorTrends(trendsRes.data);
         } catch (err) {
             console.error('Failed to fetch data:', err);
         } finally {
@@ -369,6 +372,107 @@ function IncentiveConfig() {
                             </tbody>
                         </table>
                     </div>
+                )}
+            </div>
+
+            {/* Behavior Trends (US-IN-8) */}
+            <div className="card" style={{ marginTop: 'var(--spacing-xl)' }}>
+                <div className="card-header">
+                    <h3 className="card-title">Behavior Trends</h3>
+                    <span className={`badge ${behaviorTrends?.summary?.trendDirection === 'improving' ? 'badge-success' : behaviorTrends?.summary?.trendDirection === 'declining' ? 'badge-error' : 'badge-warning'}`}>
+                        {behaviorTrends?.summary?.trendDirection || 'stable'}
+                    </span>
+                </div>
+
+                {/* Summary Stats */}
+                <div className="dashboard-grid" style={{ marginBottom: 'var(--spacing-lg)' }}>
+                    <div className="stat-card">
+                        <div className="stat-card-label">Active Users</div>
+                        <div className="stat-card-value">{behaviorTrends?.summary?.totalUsers || 0}</div>
+                    </div>
+                    <div className="stat-card">
+                        <div className="stat-card-label">Avg Attendance</div>
+                        <div className="stat-card-value" style={{ color: 'var(--success)' }}>
+                            {behaviorTrends?.summary?.avgAttendanceRate?.toFixed(1) || 0}%
+                        </div>
+                    </div>
+                    <div className="stat-card">
+                        <div className="stat-card-label">Total No-Shows</div>
+                        <div className="stat-card-value" style={{ color: 'var(--error)' }}>
+                            {behaviorTrends?.summary?.totalNoShows || 0}
+                        </div>
+                    </div>
+                    <div className="stat-card">
+                        <div className="stat-card-label">Points Awarded</div>
+                        <div className="stat-card-value primary">{behaviorTrends?.summary?.totalPointsAwarded || 0}</div>
+                    </div>
+                </div>
+
+                {/* Weekly Chart */}
+                <div className="text-sm text-muted mb-1">Weekly Attendance Rate</div>
+                <div style={{ display: 'flex', gap: '0.5rem', height: '80px', alignItems: 'flex-end', marginBottom: '0.5rem' }}>
+                    {behaviorTrends?.weeklyTrends?.map((week, idx) => (
+                        <div key={idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                            <span className="text-xs">{week.attendanceRate?.toFixed(0)}%</span>
+                            <div
+                                style={{
+                                    width: '100%',
+                                    backgroundColor: week.attendanceRate >= 80 ? 'var(--success)' :
+                                        week.attendanceRate >= 50 ? 'var(--warning)' : 'var(--error)',
+                                    height: `${Math.max(4, (week.attendanceRate / 100) * 55)}px`,
+                                    borderRadius: '4px 4px 0 0',
+                                    transition: 'height 0.3s ease'
+                                }}
+                                title={`${week.weekStart}: ${week.attended}/${week.totalBookings} attended`}
+                            />
+                        </div>
+                    ))}
+                </div>
+
+                {/* Weekly Table */}
+                {behaviorTrends?.weeklyTrends?.length > 0 && (
+                    <div className="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Week</th>
+                                    <th>Bookings</th>
+                                    <th>Attended</th>
+                                    <th>No-Shows</th>
+                                    <th>Points</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {behaviorTrends.weeklyTrends.map((week, idx) => (
+                                    <tr key={idx}>
+                                        <td>{week.weekStart}</td>
+                                        <td>{week.totalBookings}</td>
+                                        <td>{week.attended}</td>
+                                        <td>
+                                            {week.noShows > 0 ? (
+                                                <span className="badge badge-error">{week.noShows}</span>
+                                            ) : (
+                                                <span className="badge badge-success">0</span>
+                                            )}
+                                        </td>
+                                        <td>+{week.pointsAwarded}</td>
+                                        <td>
+                                            <div className="flex items-center gap-2">
+                                                <div className="progress-bar" style={{ width: '50px', height: '6px' }}>
+                                                    <div className="progress-bar-fill" style={{ width: `${week.attendanceRate}%` }} />
+                                                </div>
+                                                <span className="text-xs">{week.attendanceRate?.toFixed(0)}%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+                {(!behaviorTrends?.weeklyTrends || behaviorTrends.weeklyTrends.length === 0) && (
+                    <p className="text-muted text-center">No behavior data available yet.</p>
                 )}
             </div>
         </div>
