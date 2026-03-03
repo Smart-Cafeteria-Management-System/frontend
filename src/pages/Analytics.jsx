@@ -123,20 +123,24 @@ function Analytics() {
                     </div>
 
                     <div className="text-sm text-muted mb-1">Last 7 Days Trend</div>
-                    <div style={{ display: 'flex', gap: '0.25rem', height: '60px', alignItems: 'flex-end' }}>
-                        {wasteReport?.wasteData?.map((data, idx) => (
-                            <div
-                                key={idx}
-                                style={{
-                                    flex: 1,
-                                    backgroundColor: data.wastePercentage < 10 ? 'var(--success)' :
-                                        data.wastePercentage < 20 ? 'var(--warning)' : 'var(--error)',
-                                    height: `${Math.max(10, data.wastePercentage * 3)}px`,
-                                    borderRadius: '4px 4px 0 0'
-                                }}
-                                title={`${data.wastePercentage}%`}
-                            />
-                        ))}
+                    <div style={{ display: 'flex', gap: '0.25rem', height: '60px', alignItems: 'flex-end', overflow: 'hidden' }}>
+                        {(() => {
+                            const maxVal = Math.max(1, ...(wasteReport?.wasteData?.map(d => d.wastePercentage) || [1]));
+                            return wasteReport?.wasteData?.map((data, idx) => (
+                                <div
+                                    key={idx}
+                                    style={{
+                                        flex: 1,
+                                        backgroundColor: data.wastePercentage < 10 ? 'var(--success)' :
+                                            data.wastePercentage < 20 ? 'var(--warning)' : 'var(--error)',
+                                        height: `${Math.max(8, (data.wastePercentage / maxVal) * 55)}px`,
+                                        borderRadius: '4px 4px 0 0',
+                                        transition: 'height 0.3s ease'
+                                    }}
+                                    title={`${data.date}: ${data.wastePercentage?.toFixed(1)}%`}
+                                />
+                            ));
+                        })()}
                     </div>
                     <div className="text-xs text-muted text-center mt-1">Past 7 days</div>
                 </div>
