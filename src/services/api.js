@@ -83,7 +83,8 @@ export const queueAPI = {
     getMyToken: () => api.get('/queue/my-token'),
     callNext: (counterNumber) => api.post('/queue/call-next', { counterNumber }),
     serve: (id) => api.put(`/queue/${id}/serve`),
-    getHistory: () => api.get('/queue/history')
+    getHistory: () => api.get('/queue/history'),
+    getFairness: (days = 7) => api.get(`/queue/fairness?days=${days}`)
 };
 
 // Menu & Inventory Control (Epic 2)
@@ -131,8 +132,13 @@ export const wasteAPI = {
 // Sustainability Metrics (Epic 4.8)
 export const sustainabilityAPI = {
     getMetrics: () => api.get('/sustainability/metrics'),
-    getReport: () => api.get('/sustainability/report'),
-    downloadCSV: () => api.get('/sustainability/report/csv', { responseType: 'blob' })
+    getReport: (period = '30d', startDate, endDate) => {
+        let url = `/sustainability/report?period=${period}`;
+        if (period === 'custom' && startDate) url += `&startDate=${startDate}`;
+        if (period === 'custom' && endDate) url += `&endDate=${endDate}`;
+        return api.get(url);
+    },
+    downloadCSV: (period = '30d') => api.get(`/sustainability/report/csv?period=${period}`, { responseType: 'blob' })
 };
 
 // AI-Driven Preparation Recommendations (Epic 4.5)
@@ -162,6 +168,7 @@ export const incentivesAPI = {
     updateRule: (id, data) => api.put(`/incentives/rules/${id}`, data),
     deleteRule: (id) => api.delete(`/incentives/rules/${id}`),
     getAbuseReport: () => api.get('/incentives/abuse-report'),
+    getBehaviorTrends: (days = 30) => api.get(`/incentives/behavior-trends?days=${days}`),
     applyToSlots: () => api.post('/incentives/apply-to-slots')
 };
 
