@@ -429,59 +429,13 @@ function Layout({ children }) {
                 <aside style={{
                     width: '200px',
                     flexShrink: 0,
-                    padding: '1.5rem 1rem 1.5rem 0',
+                    padding: '0.5rem 1rem 1.5rem 0',
                     position: 'sticky',
                     top: 0,
                     maxHeight: '100vh',
                     overflowY: 'auto',
                 }}>
-                    {/* Profile card */}
-                    <div style={{
-                        background: 'var(--white)',
-                        borderRadius: 'var(--radius-lg)',
-                        border: '1.5px solid var(--gray-200)',
-                        boxShadow: 'var(--shadow-sm)',
-                        padding: '14px 12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                    }}>
-                        {/* Avatar circle */}
-                        <div style={{
-                            width: '38px',
-                            height: '38px',
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, var(--primary-400), var(--primary-600))',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#fff',
-                            fontWeight: 700,
-                            fontSize: '1rem',
-                            flexShrink: 0,
-                        }}>
-                            {user?.name?.charAt(0)?.toUpperCase() ?? '?'}
-                        </div>
-                        <div style={{ minWidth: 0 }}>
-                            <div style={{
-                                fontSize: '0.8rem',
-                                fontWeight: 700,
-                                color: 'var(--gray-800)',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}>{user?.name}</div>
-                            <div style={{
-                                fontSize: '0.65rem',
-                                fontWeight: 600,
-                                color: 'var(--primary-500)',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.5px',
-                            }}>{user?.role}</div>
-                        </div>
-                    </div>
-
-                    {/* Queue visualiser */}
+                    {/* Queue visualiser – no profile card */}
                     <QueueVisualiser />
                 </aside>
             </div>
