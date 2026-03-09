@@ -1626,3 +1626,337 @@ input[type="checkbox"] {
     opacity: 1;
   }
 }
+
+/* ==========================================
+   Payment Modal Styles
+   ========================================== */
+
+.payment-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+
+.payment-modal {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.3s ease;
+}
+
+.payment-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 2px solid var(--gray-100);
+}
+
+.payment-modal-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.payment-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  transition: var(--transition-fast);
+}
+
+.payment-close-btn:hover {
+  color: var(--gray-700);
+}
+
+.payment-amount {
+  text-align: center;
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+  margin: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+}
+
+.payment-amount-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray-500);
+  margin-bottom: var(--spacing-xs);
+}
+
+.payment-amount-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary-700);
+}
+
+/* Payment Tabs */
+.payment-tabs {
+  display: flex;
+  gap: 0;
+  margin: 0 var(--spacing-lg);
+  border-bottom: 2px solid var(--gray-100);
+}
+
+.payment-tab {
+  flex: 1;
+  padding: var(--spacing-md) var(--spacing-sm);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: var(--transition-fast);
+}
+
+.payment-tab:hover {
+  color: var(--primary-500);
+}
+
+.payment-tab.active {
+  color: var(--primary-600);
+  border-bottom-color: var(--primary-500);
+}
+
+.payment-tab-icon {
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--gray-500);
+  margin: 0 auto 0.25rem;
+  transition: var(--transition-fast);
+}
+
+.payment-tab.active .payment-tab-icon {
+  background: var(--primary-100);
+  color: var(--primary-600);
+}
+
+.payment-body {
+  padding: var(--spacing-lg);
+}
+
+/* Card Form */
+.payment-card-row {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.payment-card-row .form-group {
+  flex: 1;
+}
+
+/* UPI Section */
+.payment-upi-section {
+  text-align: center;
+}
+
+.payment-qr-img {
+  width: 180px;
+  height: 180px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--gray-200);
+  margin: var(--spacing-md) auto;
+  display: block;
+  object-fit: contain;
+}
+
+.payment-upi-id {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  margin-bottom: var(--spacing-md);
+}
+
+.payment-upi-id strong {
+  color: var(--primary-600);
+  font-weight: 700;
+}
+
+/* Wallet Section */
+.payment-wallet-balance {
+  text-align: center;
+  padding: var(--spacing-lg);
+  background: var(--success-light);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.payment-wallet-balance-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #065f46;
+  letter-spacing: 1px;
+}
+
+.payment-wallet-balance-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #065f46;
+}
+
+/* Payment Processing */
+.payment-processing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.payment-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--gray-200);
+  border-top: 4px solid var(--primary-500);
+  border-radius: 50%;
+  animation: paymentSpin 0.8s linear infinite;
+  margin-bottom: var(--spacing-lg);
+}
+
+@keyframes paymentSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.payment-processing-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.payment-processing-sub {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-top: var(--spacing-xs);
+}
+
+/* Payment Success */
+.payment-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.payment-success-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  margin-bottom: var(--spacing-lg);
+  animation: paymentPop 0.4s ease;
+}
+
+@keyframes paymentPop {
+  0% {
+    transform: scale(0);
+  }
+
+  70% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.payment-success-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.payment-success-sub {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin-top: var(--spacing-xs);
+}
+
+/* Payment Button */
+.payment-btn {
+  width: 100%;
+  padding: 0.875rem;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  background: var(--primary-500);
+  color: var(--white);
+}
+
+.payment-btn:hover {
+  background: var(--primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.payment-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.payment-btn.wallet-btn {
+  background: #059669;
+}
+
+.payment-btn.wallet-btn:hover {
+  background: #047857;
+}
+
+.payment-btn.upi-btn {
+  background: #6366f1;
+}
+
+.payment-btn.upi-btn:hover {
+  background: #4f46e5;
+}
+
+/* Secure badge */
+.payment-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  margin-top: var(--spacing-md);
+}
