@@ -1,7 +1,7 @@
 # ============================================================
 # Smart Cafeteria Frontend — CI/CD Pipeline
 # Triggers on push and pull requests to main branch
-# Steps: Checkout → Setup Node → Install → Lint → Build
+# Steps: Checkout → Setup Node → Install → Lint → Test → Build
 # ============================================================
 
 name: Frontend CI/CD
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    name: Lint & Build
+    name: Lint, Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +37,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      # 5. Build for production
+      # 5. Run Tests
+      - name: Test
+        run: npm test
+
+      # 6. Build for production
       - name: Build
         run: npm run build
         env:
