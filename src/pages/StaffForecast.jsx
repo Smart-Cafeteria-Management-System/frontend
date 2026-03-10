@@ -43,7 +43,16 @@ const StaffForecast = () => {
                 preparationAPI.getRecommendations(selectedDate)
             ]);
 
-            setForecasts(forecastRes.data);
+            // Deduplicate forecasts mapping by Date + Meal
+            const uniqueMap = new Map();
+            forecastRes.data.forEach(f => {
+                const key = `${f.date.split('T')[0]}_${f.mealType}`;
+                if (!uniqueMap.has(key)) {
+                    uniqueMap.set(key, f);
+                }
+            });
+            setForecasts(Array.from(uniqueMap.values()));
+
             setAccuracy(accuracyRes.data);
             setWasteSummary(wasteRes.data);
             setSustainability(sustainRes.data);
@@ -444,7 +453,13 @@ const StaffForecast = () => {
                             <div className="form-row">
                                 <div className="field-group">
                                     <label>Service Date</label>
-                                    <input type="date" value={wasteForm.date} onChange={(e) => setWasteForm({ ...wasteForm, date: e.target.value })} required />
+                                    <input
+                                        type="date"
+                                        value={wasteForm.date}
+                                        max={new Date().toISOString().split('T')[0]}
+                                        onChange={(e) => setWasteForm({ ...wasteForm, date: e.target.value })}
+                                        required
+                                    />
                                 </div>
                                 <div className="field-group">
                                     <label>Meal Session</label>
@@ -476,7 +491,7 @@ const StaffForecast = () => {
                             </div>
                             <div className="form-actions mt-3">
                                 <button type="button" className="btn-cancel" onClick={() => setShowWasteModal(false)}>Discard</button>
-                                <button type="submit" className="btn-submit">Confirm Log</button>
+                                <button type="submit" className="btn-submit" disabled={loading}>Confirm Log</button>
                             </div>
                         </form>
                     </div>
