@@ -8,106 +8,77 @@ A premium, responsive web interface for the Smart Cafeteria Management System. D
 
 ---
 
-## 🔥 Key Portals & Features
+## 📖 1. User Documentation
+
+The platform provides Role-Based Access Control (RBAC) with distinct portals.
 
 ### 👨‍🎓 Student Portal
-- **Booking Dashboard**: View meal slots, pre-book meals, and track booking history.
-- **Queue Status**: Real-time view of your queue position and dynamic wait-time display.
-- **Menu Browser**: Browse the full cafeteria menu with nutritional information.
-- **Rewards & Incentives**: Earn points for timely attendance, view your impact log, and redeem free add-ons.
+- **Booking Dashboard:** View meal slots, browse the menu, and pre-book meals using an interactive shopping cart. Includes digital token generation (`#13615`).
+- **Queue Status:** Real-time view of your queue position and dynamic wait-time calculation.
+- **Order Management:** Handle cancellations (`#13736`) directly from the dashboard.
+- **Rewards & Incentives:** Earn points for attendance (`#10623`), view incentive status (`#10648`), and redeem free add-ons. 
+- **Transparency:** View system service rules (`#13561`) via the Ethics page.
 
 ### 👨‍🍳 Staff Portal
-- **Staff Dashboard**: Overview of daily operations and pending tasks.
-- **Queue Manager**: Call tokens sequentially and mark them as served (Enforced FIFO).
-- **Demand Forecast**: View ML-predicted student volumes to adjust food preparation.
+- **Queue Manager:** Call tokens sequentially and mark them as served (Enforcing strict FIFO fairness).
+- **Demand Forecast:** View AI-predicted student meal volumes to optimize daily food preparation.
 
 ### 👑 Admin Portal
-- **Analytics Command Center**: Monitor system health, attendance trends, and waste metrics.
-- **Menu Management**: Full CRUD operations for menu items with nutritional data.
-- **Slot Configuration**: Create and manage daily meal slots.
-- **User Management**: View and manage all user accounts.
-- **Incentive Configuration**: Set up and manage the gamified points system.
-- **Audit Logs**: Track all security-sensitive actions with timestamps and IP addresses.
-
-### 🌙 Dark Mode
-- **One-click toggle** (🌙/☀️) available on every page — including the login screen.
-- Smooth transition animations between light and dark themes.
-- Preference **persists** across sessions via localStorage.
+- **Analytics Command Center:** Monitor system health, user trends, and fairness indicators (`#13580`).
+- **Incentive Configuration:** Define reward rules (`#10618`), prevent abuse (`#10643`), and configure point systems (`#10631`).
+- **System Settings:** Manage global application states and operating hours (`#14891`).
+- **Security & Ethics:** Full access to fairness audit logs (`#13573`).
 
 ---
 
-## 🔐 Security Features
-- **Two-Factor Authentication (TOTP)**: Mandatory 2FA setup on first login using Google Authenticator / Authy.
-- **Role-Based Access Control (RBAC)**: Protected routes that enforce admin, staff, and student permissions.
-- **Ethics & Rules Page**: Transparent display of system fairness policies.
+## 💻 2. Developer Documentation
 
----
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v20+)
+- Ensure the Go Backend is running locally on port 5000.
 
-## 🛠 Tech Stack
-- **Frontend Framework**: React.js 18
-- **Build Tool**: Vite (Lightning fast HMR)
-- **Styling**: Vanilla CSS with CSS Custom Properties (theming via `:root` variables)
-- **State Management**: React Context API (`AuthContext`, `ThemeContext`)
-- **Routing**: React Router v6 (Protected routes with role checks)
-- **Networking**: Axios (API communication)
-
----
-
-## 🚀 Quick Start (Development)
-
+### Local Setup
 ```bash
 # 1. Install dependencies
-npm install
+npm ci
 
-# 2. Run the development server
+# 2. Run the development server (Defaults to http://localhost:5173)
 npm run dev
+
+# 3. Build for production
+npm run build
 ```
 
-The app will start at `http://localhost:5173`. Make sure the **Go Backend** is running on port 5000 for the API to work.
+### Tech Stack
+- **Framework:** React.js 18 built with Vite for rapid HMR.
+- **Styling:** Vanilla CSS utilizing CSS Custom Properties for immediate light/dark theme toggling.
+- **State:** React Context API (`AuthContext`, `ThemeContext`).
+- **Routing:** React Router v6 (Protected Role-based routes).
+- **CI/CD:** GitHub Actions `.github/workflows/ci.yml` (Linting, Building, Dockerization).
+
+### Dark Mode Architecture
+Dark mode preference is saved to `localStorage` and respects system preferences. CSS variables in `:root` are programmatically overridden by `data-theme="dark"` on the body element.
 
 ---
 
-## 📂 Directory Structure
-```
-frontend/
-├── src/
-│   ├── assets/              # Media assets
-│   ├── components/
-│   │   └── common/
-│   │       └── Layout.jsx   # Shared layout with header, nav, and theme toggle
-│   ├── context/
-│   │   ├── AuthContext.jsx  # Authentication state & API methods
-│   │   └── ThemeContext.jsx # Dark/light theme state & persistence
-│   ├── pages/               # 19 page components
-│   │   ├── Login.jsx        # Login with TOTP 2FA flow
-│   │   ├── Signup.jsx       # Student registration
-│   │   ├── AdminDashboard.jsx
-│   │   ├── StaffDashboard.jsx
-│   │   ├── UserDashboard.jsx
-│   │   ├── Booking.jsx
-│   │   ├── QueueStatus.jsx
-│   │   ├── Menu.jsx
-│   │   ├── StaffForecast.jsx
-│   │   ├── Analytics.jsx
-│   │   ├── Slots.jsx
-│   │   ├── Incentives.jsx
-│   │   ├── IncentiveConfig.jsx
-│   │   ├── AddonClaim.jsx
-│   │   ├── Addons.jsx
-│   │   ├── AuditLogs.jsx
-│   │   ├── Users.jsx
-│   │   ├── Ethics.jsx
-│   │   └── TotpSetup.jsx
-│   ├── services/
-│   │   └── api.js           # Axios instance & API methods
-│   ├── styles/
-│   │   └── global.css       # Global styles, CSS variables, dark mode overrides
-│   ├── App.jsx              # Root component with routing
-│   └── main.jsx             # Entry point
-└── vite.config.js
+## 🏗️ 3. Architecture Overview
+
+```mermaid
+graph TD
+    Client[Browser Student/Staff/Admin] -->|HTTPS| Vercel[Vercel Edge CDN]
+    Vercel --> React[React.js Frontend]
+    React -->|Axios REST| Gateway[Go Fiber API Gateway]
+    React -->|Context| State[(Local App State)]
 ```
 
+- **Deployment:** The frontend is Dockerized but optimized for deployment on Vercel or similar Edge PaaS.
+- **API Integration:** All API calls are centralized in `src/services/api.js`. Axios interceptors automatically attach JWT bearer tokens and handle 401 Unauthorized errors (refresh/redirect).
+
 ---
+
+## 🔐 4. Security & Authentication
+- **TOTP 2FA:** Setup required for privileged roles (Staff, Admin).
+- **Route Guards:** If a student attempts to navigate to `/admin`, the React Router intercepts and redirects to `/unauthorized`.
 
 ## 📝 Demo Credentials
 | Role     | Email                        | Password  |
