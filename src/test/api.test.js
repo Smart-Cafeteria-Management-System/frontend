@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import api, { authAPI, menuAPI, bookingsAPI } from '../services/api';
 
 describe('API Service', () => {
