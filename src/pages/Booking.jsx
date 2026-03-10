@@ -32,7 +32,18 @@ function Booking() {
                 slotsAPI.getToday(),
                 menuAPI.getAll()
             ]);
-            setSlots(slotsRes.data.filter(s => s.status === 'available'));
+            const activeSlots = slotsRes.data.filter(s => s.status === 'available');
+
+            // Deduplicate slots to prevent UI duplicates if DB has multiple entries
+            const uniqueSlotsMap = new Map();
+            activeSlots.forEach(slot => {
+                const key = `${slot.mealType}-${slot.startTime}`;
+                if (!uniqueSlotsMap.has(key)) {
+                    uniqueSlotsMap.set(key, slot);
+                }
+            });
+
+            setSlots(Array.from(uniqueSlotsMap.values()));
             setMenuItems(menuRes.data.filter(m => m.available));
         } catch (error) {
             console.error('Error loading data:', error);
